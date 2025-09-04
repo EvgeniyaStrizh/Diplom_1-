@@ -9,24 +9,21 @@ from ingredient_types import INGREDIENT_TYPE_SAUCE, INGREDIENT_TYPE_FILLING
 class TestDatabase:
     """Тесты для класса Database"""
 
-    def setup_method(self):
-        """Настройка перед каждым тестом"""
-        self.database = Database()
 
-    def test_database_initialization(self):
+    def test_database_initialization(self, database):
         """Тест инициализации базы данных"""
-        assert len(self.database.buns) == 3
-        assert len(self.database.ingredients) == 6
+        assert len(database.buns) == 3
+        assert len(database.ingredients) == 6
 
-    def test_available_buns(self):
+    def test_available_buns(self, database):
         """Тест метода available_buns"""
-        buns = self.database.available_buns()
+        buns = database.available_buns()
         assert len(buns) == 3
         assert all(isinstance(bun, Bun) for bun in buns)
 
-    def test_available_ingredients(self):
+    def test_available_ingredients(self, database):
         """Тест метода available_ingredients"""
-        ingredients = self.database.available_ingredients()
+        ingredients = database.available_ingredients()
         assert len(ingredients) == 6
         assert all(isinstance(ingredient, Ingredient) for ingredient in ingredients)
 
@@ -35,9 +32,9 @@ class TestDatabase:
         ("white bun", 200),
         ("red bun", 300)
     ])
-    def test_buns_data(self, expected_bun_name, expected_bun_price):
+    def test_buns_data(self, database, expected_bun_name, expected_bun_price):
         """Тест данных булочек с параметризацией"""
-        buns = self.database.available_buns()
+        buns = database.available_buns()
         bun_names = [bun.get_name() for bun in buns]
         bun_prices = [bun.get_price() for bun in buns]
         
@@ -52,9 +49,9 @@ class TestDatabase:
         ("dinosaur", INGREDIENT_TYPE_FILLING, 200),
         ("sausage", INGREDIENT_TYPE_FILLING, 300)
     ])
-    def test_ingredients_data(self, expected_ingredient_name, expected_ingredient_type, expected_ingredient_price):
+    def test_ingredients_data(self, database, expected_ingredient_name, expected_ingredient_type, expected_ingredient_price):
         """Тест данных ингредиентов с параметризацией"""
-        ingredients = self.database.available_ingredients()
+        ingredients = database.available_ingredients()
         ingredient_names = [ingredient.get_name() for ingredient in ingredients]
         ingredient_types = [ingredient.get_type() for ingredient in ingredients]
         ingredient_prices = [ingredient.get_price() for ingredient in ingredients]
@@ -63,9 +60,9 @@ class TestDatabase:
         assert expected_ingredient_type in ingredient_types
         assert expected_ingredient_price in ingredient_prices
 
-    def test_buns_structure(self):
+    def test_buns_structure(self, database):
         """Тест структуры булочек"""
-        buns = self.database.available_buns()
+        buns = database.available_buns()
         
         # Проверяем, что все булочки имеют правильную структуру
         for bun in buns:
@@ -76,9 +73,9 @@ class TestDatabase:
             assert callable(bun.get_name)
             assert callable(bun.get_price)
 
-    def test_ingredients_structure(self):
+    def test_ingredients_structure(self, database):
         """Тест структуры ингредиентов"""
-        ingredients = self.database.available_ingredients()
+        ingredients = database.available_ingredients()
         
         # Проверяем, что все ингредиенты имеют правильную структуру
         for ingredient in ingredients:
@@ -92,26 +89,26 @@ class TestDatabase:
             assert callable(ingredient.get_name)
             assert callable(ingredient.get_price)
 
-    def test_sauce_ingredients_count(self):
+    def test_sauce_ingredients_count(self, database):
         """Тест количества соусов"""
-        ingredients = self.database.available_ingredients()
+        ingredients = database.available_ingredients()
         sauce_count = sum(1 for ingredient in ingredients if ingredient.get_type() == INGREDIENT_TYPE_SAUCE)
         assert sauce_count == 3
 
-    def test_filling_ingredients_count(self):
+    def test_filling_ingredients_count(self, database):
         """Тест количества начинок"""
-        ingredients = self.database.available_ingredients()
+        ingredients = database.available_ingredients()
         filling_count = sum(1 for ingredient in ingredients if ingredient.get_type() == INGREDIENT_TYPE_FILLING)
         assert filling_count == 3
 
-    def test_unique_bun_names(self):
+    def test_unique_bun_names(self, database):
         """Тест уникальности названий булочек"""
-        buns = self.database.available_buns()
+        buns = database.available_buns()
         bun_names = [bun.get_name() for bun in buns]
         assert len(bun_names) == len(set(bun_names))
 
-    def test_unique_ingredient_names(self):
+    def test_unique_ingredient_names(self, database):
         """Тест уникальности названий ингредиентов"""
-        ingredients = self.database.available_ingredients()
+        ingredients = database.available_ingredients()
         ingredient_names = [ingredient.get_name() for ingredient in ingredients]
         assert len(ingredient_names) == len(set(ingredient_names))
